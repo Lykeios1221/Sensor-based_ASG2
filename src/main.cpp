@@ -328,6 +328,7 @@ double getDistance() {
     const float temperature = dht.readTemperature();
     const float humidity = dht.readHumidity();
     if (isnormal(temperature) && isnormal(humidity)) {
+        // Compensate speed of sounds with relative humidity and temperature
         const double soundSpeed = 331.4 + (temperature * 0.6 + 0.0124 * humidity);
         const double distance = (pingTime * (soundSpeed / 2)) / 10000;
         return distance;
@@ -336,6 +337,7 @@ double getDistance() {
 }
 
 void loop() {
+
     if (touchState == LONG_PRESSED) {
         EasyBuzzer.stopBeep();
         EEPROM.put(0, 0);
@@ -357,11 +359,13 @@ void loop() {
             const double distance = getDistance();
             int pauseDuration = BASED_PAUSE_DURATION;
             bool isTrigger = false;
+            // Trigger only one LED depending on range
             for (int i = 0; i < LED_ORDER_VECTOR.size(); - ++i) {
                 const double triggerRange = isIOConfigValid ?
                                             savedData[String("ledTriggerRange") + i] :
                                             DEFAULT_LED_TRIGGER_RANGE.at(LED_ORDER_VECTOR.at(i).c_str());
                 if (!isTrigger) {
+                    // If previous LED triggered, set self to 0 brightness
                     if (distance <= triggerRange) {
                         const ulong brightness = isIOConfigValid ?
                                                  savedData[String("ledBrightness") + i] :
@@ -372,6 +376,7 @@ void loop() {
                     } else {
                         ledcWrite(i + 1, 0);
                     }
+                    // Closer range level, lower frequency of buzzer
                     pauseDuration += PAUSE_DURATION_INCREMENT;
                 } else {
                     ledcWrite(i + 1, 0);
@@ -385,6 +390,7 @@ void loop() {
                 ledcWrite(i + 1, DEFAULT_BRIGHTNESS);
             }
             EasyBuzzer.stopBeep();
+            // Recoonection network for 10 attempts, if failed goes into light sleep mode
             if (connectWiFi(savedData["ssid"], savedData["password"], 10)) {
                 Serial.println("\nReestablish connect successfully.");
                 EasyBuzzer.beep(BUZZER_FREQUENCY, 1, 0, 10, BASED_PAUSE_DURATION, 0, NULL);
