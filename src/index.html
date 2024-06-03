@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ESP TEST</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="style.min.css"
+    />
+  </head>
+  <body>
+    <header id="page-header">
+      <h1>ESP Distance Sensing LED Web Server</h1>
+    </header>
+    <form
+      id="configForm"
+      method="post"
+      action="/submitForm"
+      class="d-flex flex-column"
+      style="flex-grow: 1; position: relative;"
+    >
+      <main>
+        <div class="card">
+          <div
+            class="collapse-toggle d-flex align-items-center justify-content-center card-header"
+            data-toggle="#credentialForm"
+          >
+            <h2 style="margin-right: auto">WiFi Credential</h2>
+            <span class="collapse-icon">&#9650;</span>
+          </div>
+          <div
+            id="credentialForm"
+            class="collapse-content"
+          >
+            <div class="card-body">
+              <button
+                id="refreshNetworks"
+                type="button"
+                class="btn btn-primary"
+              >
+                Refresh
+              </button>
+              <table id="networkTable">
+                <thead>
+                  <tr>
+                    <th scope="col">Available Networks</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+              <label for="ssid">SSID:</label><br />
+              <input
+                type="text"
+                id="ssid"
+                name="ssid"
+                required
+              />
+              <label for="deviceID">Device ID:</label><br />
+              <input
+                type="text"
+                id="deviceID"
+                name="deviceID"
+                required
+              />
+              <label for="password">Password:</label><br />
+              <input
+                type="password"
+                id="password"
+                name="password"
+                autocomplete="new=password"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="card"
+          style="margin-top: 1.5rem"
+        >
+          <div
+            class="collapse-toggle d-flex align-items-center justify-content-center card-header"
+            data-toggle="#ledControl"
+          >
+            <h2 style="margin-right: auto">Control</h2>
+            <span class="collapse-icon">&#9650;</span>
+          </div>
+          <div
+            id="ledControl"
+            class="collapse-content"
+          >
+            <div
+              id="ledList"
+              class="card-body"
+            >
+              <div>
+                <span><b>Note:</b></span>
+                  <ol>
+                    <li>Trigger ranges must have value such that GREEN > YELLLOW > RED.</li>
+                    <li>Press and release to toggle the device.</li>
+                    <li>Long press 5 seconds and release to erase saved configuration.</li>
+                  </ol>
+              </div>
+              <div class="d-flex align-items-center justify-content-center">
+                <span>LED #1 - GPIO%RED%</span>
+                <span class="brightness-box red">RED</span>
+                <span>Brightness (0 - %MAXBRIGHTNESS%)</span>
+                <div
+                  class="slideContainer d-flex align-items-center justify-content-center"
+                >
+                  <input
+                    type="range"
+                    min="0"
+                    max="%MAXBRIGHTNESS%"
+                    value="%MAXBRIGHTNESS%"
+                    step="1"
+                    class="slider brightness-slider"
+                    name="ledBrightness0"
+                  />
+                  <input
+                    type="number"
+                    inputmode="numeric"
+                    min="0"
+                    max="%MAXBRIGHTNESS%"
+                    value="%MAXBRIGHTNESS%"
+                    step="1"
+                    class="brightness-number"
+                  />
+                </div>
+                <span>Trigger Range (%MINRANGE% - %MAXRANGE%)</span>
+                <div
+                  class="slideContainer d-flex align-items-center justify-content-center"
+                >
+                  <input
+                    type="range"
+                    min="%MINRANGE%"
+                    max="%MAXRANGE%"
+                    value="%MAXRANGE%"
+                    step="1"
+                    class="slider"
+                    name="ledTriggerRange0"
+                  />
+                  <input
+                    type="number"
+                    inputmode="numeric"
+                    min="%MINRANGE%"
+                    max="%MAXRANGE%"
+                    value="%MAXRANGE%"
+                    step="1"
+                  />
+                </div>
+              </div>
+              <div class="d-flex align-items-center justify-content-center">
+                <span>LED #1 - GPIO%YELLOW%</span>
+                <span class="brightness-box yellow">YELLOW</span>
+                <span>Brightness (0 - %MAXBRIGHTNESS%)</span>
+                <div
+                  class="slideContainer d-flex align-items-center justify-content-center"
+                >
+                  <input
+                    type="range"
+                    min="0"
+                    max="%MAXBRIGHTNESS%"
+                    value="%MAXBRIGHTNESS%"
+                    step="1"
+                    class="slider brightness-slider"
+                    name="ledBrightness1"
+                  />
+                  <input
+                    type="number"
+                    inputmode="numeric"
+                    min="0"
+                    max="%MAXBRIGHTNESS%"
+                    value="%MAXBRIGHTNESS%"
+                    step="1"
+                    class="brightness-number"
+                  />
+                </div>
+                <span>Trigger Range (%MINRANGE% - %MAXRANGE%)</span>
+                <div
+                  class="slideContainer d-flex align-items-center justify-content-center"
+                >
+                  <input
+                    type="range"
+                    min="%MINRANGE%"
+                    max="%MAXRANGE%"
+                    value="%MAXRANGE%"
+                    step="1"
+                    class="slider"
+                    name="ledTriggerRange1"
+                  />
+                  <input
+                    type="number"
+                    inputmode="numeric"
+                    min="%MINRANGE%"
+                    max="%MAXRANGE%"
+                    value="%MAXRANGE%"
+                    step="1"
+                  />
+                </div>
+              </div>
+              <div class="d-flex align-items-center justify-content-center">
+                <span>LED #1 - GPIO%GREEN%</span>12
+                <span class="brightness-box green">GREEN</span>
+                <span>Brightness (0 - %MAXBRIGHTNESS%)</span>
+                <div
+                  class="slideContainer d-flex align-items-center justify-content-center"
+                >
+                  <input
+                    type="range"
+                    min="0"
+                    max="%MAXBRIGHTNESS%"
+                    value="%MAXBRIGHTNESS%"
+                    step="1"
+                    class="slider brightness-slider"
+                    name="ledBrightness2"
+                  />
+                  <input
+                    type="number"
+                    inputmode="numeric"
+                    min="0"
+                    max="%MAXBRIGHTNESS%"
+                    value="%MAXBRIGHTNESS%"
+                    step="1"
+                    class="brightness-number"
+                  />
+                </div>
+                <span>Trigger Range (%MINRANGE% - %MAXRANGE%)</span>
+                <div
+                  class="slideContainer d-flex align-items-center justify-content-center"
+                >
+                  <input
+                    type="range"
+                    min="%MINRANGE%"
+                    max="%MAXRANGE%"
+                    value="%MAXRANGE%"
+                    step="1"
+                    class="slider"
+                    name="ledTriggerRange2"
+                  />
+                  <input
+                    type="number"
+                    inputmode="numeric"
+                    min="%MINRANGE%"
+                    max="%MAXRANGE%"
+                    value="%MAXRANGE%"
+                    step="1"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <div
+        id="buttonContainer"
+        class="d-flex justify-content-center"
+      >
+        <button
+          type="submit"
+          class="btn btn-primary"
+        >
+          Submit
+        </button>
+        <button
+          type="reset"
+          class="btn btn-danger"
+        >
+          Reset
+        </button>
+      </div>
+    </form>
+
+    <template id="networkTableRow">
+      <tr>
+        <td>
+          <svg
+            class="wifi-svg"
+            viewBox="0 0 100 100"
+            stroke="#000"
+            stroke-width="7"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              class="wifi-0"
+              cx="50"
+              cy="80"
+              r="5"
+              stroke="none"
+            />
+            <path
+              class="wifi-1"
+              d="M35 70q15-10 30 0"
+              fill="none"
+            />
+            <path
+              class="wifi-2"
+              d="M25 60q25-20 50 0"
+              fill="none"
+            />
+            <path
+              class="wifi-3"
+              d="M15 50q35-30 70 0"
+              fill="none"
+            />
+            <path
+              class="wifi-4"
+              d="M5 40q45-40 90 0"
+              fill="none"
+            />
+            <path
+              class="wifi-none"
+              d="M5 40q45-40 90 0L50 82.5Z"
+              fill="none"
+              stroke="none"
+            />
+          </svg>
+          <span class="networkName"></span>
+          <button
+            type="button"
+            class="btn btn-warning networkSelect"
+          >
+            Select
+          </button>
+        </td>
+      </tr>
+    </template>
+
+    <template id="loadingNetwork">
+      <tr class="h-100">
+        <td
+          class="justify-content-center flex-column h-100"
+        >
+          <svg
+            style="scale: 3; margin-bottom: 1rem"
+            width="80"
+            height="66px"
+            viewBox="0 0 24 24"
+          >
+            <path
+              class="spinner_Uvk8"
+              d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,20a9,9,0,1,1,9-9A9,9,0,0,1,12,21Z"
+              transform="matrix(0 0 0 0 12 12)"
+            />
+            <path
+              class="spinner_Uvk8 spinner_ypeD"
+              d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,20a9,9,0,1,1,9-9A9,9,0,0,1,12,21Z"
+              transform="matrix(0 0 0 0 12 12)"
+            />
+            <path
+              class="spinner_Uvk8 spinner_y0Rj"
+              d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,20a9,9,0,1,1,9-9A9,9,0,0,1,12,21Z"
+              transform="matrix(0 0 0 0 12 12)"
+            />
+          </svg>
+          Scanning for networks
+        </td>
+      </tr>
+    </template>
+
+    <script src="index.min.js"></script>
+  </body>
+</html>
